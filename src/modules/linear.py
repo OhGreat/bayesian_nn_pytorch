@@ -19,7 +19,7 @@ class BLinear(nn.Module):
         mu_posterior: Tuple[float, float] = (0, 0.1),
         sigma_posterior: Tuple[float, float] = (0, 0.1),
         bias: bool = True,
-        device: str = None
+        device: str = None,
     ) -> None:
         """
         TODO: Describe stuff...

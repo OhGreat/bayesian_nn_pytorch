@@ -30,9 +30,9 @@ y_test = x_test.pow(3) - x_test.pow(2) + 5*torch.rand(x_test.size())
 x_test = torch.unsqueeze(x_test, dim=1).to(device)
 y_test = torch.unsqueeze(y_test, dim=1).to(device)
 
-# define model
-model = simpleBayesian(input_dim=1, hid_dim=100, output_dim=1, inference_reps=5, device=device)
-# model = simpleNN(input_dim=1, hid_dim=100, output_dim=1, device=device)
+# define model, loss & optimizer
+# model = simpleBayesian(input_dim=1, hid_dim=100, output_dim=1, inference_reps=5, device=device)
+model = simpleNN(input_dim=1, hid_dim=100, output_dim=1, device=device)
 loss = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
@@ -50,6 +50,7 @@ for step in range(epochs):
     train_preds = model(x_train)
     train_loss = loss(train_preds, y_train)
     train_l.append(train_loss.cpu().detach().numpy())
+
     # backpropagation step
     optimizer.zero_grad()
     train_loss.backward()
@@ -101,7 +102,7 @@ repeats = 10
 y_mean = torch.stack([model(x_test) for i in range(repeats)]).mean(dim=0)
 print(f"\nPrediction loss: {loss(y_mean, y_test)}")
 
-# create fit plot
+# create fitness plot
 plt.clf()
 plt.xlabel(r"$x$")
 plt.ylabel(r"$y$")
