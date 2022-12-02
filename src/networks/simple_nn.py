@@ -23,10 +23,7 @@ class simpleBayesian(nn.Module):
         self.layers = nn.Sequential(
             BLinear(input_dim, hid_dim, device=device),
             nn.ReLU(),
-            nn.Dropout(0.2),
-            # BLinear(hid_dim, hid_dim, device=device),
-            # nn.ReLU(),
-            # nn.Dropout(0.5),
+            nn.Dropout(0.5),
             BLinear(hid_dim, output_dim, device=device),
         )
 
@@ -52,9 +49,6 @@ class simpleNN(nn.Module):
         self.layers = nn.Sequential(
             nn.Linear(input_dim, hid_dim, device=device),
             nn.ReLU(),
-            # nn.Dropout(0.2),
-            # BLinear(hid_dim, hid_dim, device=device),
-            # nn.ReLU(),
             # nn.Dropout(0.5),
             nn.Linear(hid_dim, output_dim, device=device),
         )

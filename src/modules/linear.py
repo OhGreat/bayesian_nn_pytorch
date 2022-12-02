@@ -49,12 +49,10 @@ class BLinear(nn.Module):
 
         self.reset_parameters()  # initialize weights
 
-
     def to_str(self):
         return f"in features: {self.in_feats}, out features: {self.out_feats}\n\
             mu prior: {self.mu_prior}, sigma prior: {self.sigma_prior}\n\
             mu posterior: {self.mu_posterior}, sigma posterior: {self.sigma_posterior}"
-
 
     def reset_parameters(self):
         # Initialization from https://arxiv.org/abs/1810.01279
@@ -75,12 +73,12 @@ class BLinear(nn.Module):
         #     self.bias_mu.data.normal_(*self.mu_posterior)
         #     self.bias_sigma.data.normal_(*self.sigma_posterior)
 
-    def forward_(self, input: torch.Tensor, sample=True):
+    def forward(self, input: torch.Tensor, sample=True):
         W_sigma = torch.log1p(torch.exp(self.W_sigma))
-        # W_noise = torch.empty(self.W_mu.size()).normal_(0, 0.1).to(self.device)
+        # rand_like is faster than torch.empty(self.W_mu.size()).normal_(0, 1).to(self.device)
         W_noise = torch.rand_like(W_sigma)
         
-        if not sample:  # we usually use sample so we avoid branching
+        if not sample:  # we usually use sample so we wat to avoid branching
             W_sigma = torch.zeros(self.W_mu.size()).to(self.device)
             W_noise = torch.zeros(self.W_mu.size()).to(self.device)
 
@@ -89,16 +87,10 @@ class BLinear(nn.Module):
         
         if self.bias:
             bias_sigma = torch.log1p(torch.exp(self.bias_sigma))  
-            # bias_noise = torch.empty(self.bias_mu.size()).normal_(0, 0.1).to(self.device)
-            bias_noise = torch.rand_like(bias_sigma)   
+            bias_noise = torch.rand_like(bias_sigma)
             # reparametrization trick!
             bias = self.bias_mu + bias_noise * bias_sigma
         else:
             bias = None
         
         return F.linear(input.to(self.device), weights, bias)
-
-
-    def forward(self, input: torch.Tensor, sample=True):
-        return self.forward_(input, sample)
-        # return torch.stack([self.forward_(input, sample) for i in range(5)]).mean(dim=0)

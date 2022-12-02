@@ -1,5 +1,5 @@
-# bayesian_nn_experimentation
-Testing the performance of Bayesian Neural Networks versus simpler architectures.
+# Bayesian Neural Networks in Pytorch
+Bayesian Neural Network modules for experimentation. This repository is under work.
 
 ## TODO:
 - create dataset and dataloader for classification

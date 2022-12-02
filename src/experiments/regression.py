@@ -9,7 +9,7 @@ import time
 from src.networks.simple_nn import simpleBayesian, simpleNN
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
-torch.manual_seed(1)
+torch.manual_seed(5)
 
 # Train data (is just an N shaped function)
 x_train = torch.linspace(-3, 3, 500)
@@ -36,7 +36,7 @@ model = simpleBayesian(input_dim=1, hid_dim=100, output_dim=1, inference_reps=5,
 loss = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-epochs = 50_000
+epochs = 100_000
 best_eval_loss = 10_000  # temp bad evaluation
 best_eval_epoch = 0
 train_l, eval_l = [], []
