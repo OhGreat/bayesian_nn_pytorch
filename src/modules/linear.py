@@ -2,10 +2,7 @@ import math
 from typing import Tuple
 import torch
 import torch.nn as nn
-import torch.nn.init as init
 import torch.nn.functional as F
-from torch.distributions import Normal
-from collections import namedtuple
 
 
 class BLinear(nn.Module):
@@ -65,7 +62,7 @@ class BLinear(nn.Module):
             self.bias_mu.data.uniform_(-stdv, stdv)
             self.bias_sigma.data.fill_(self.log_sigma_prior)
 
-        # TODO: fix method with posterior and add param to use it
+        # TODO: fix posterior use
         # self.W_mu.data.normal_(*self.mu_posterior)
         # self.W_sigma.data.normal_(*self.sigma_posterior)
 
@@ -78,17 +75,15 @@ class BLinear(nn.Module):
         # rand_like is faster than torch.empty(self.W_mu.size()).normal_(0, 1).to(self.device)
         W_noise = torch.rand_like(W_sigma)
         
-        if not sample:  # we usually use sample so we wat to avoid branching
+        if not sample:  # we usually use sample so we want to avoid branching
             W_sigma = torch.zeros(self.W_mu.size()).to(self.device)
             W_noise = torch.zeros(self.W_mu.size()).to(self.device)
 
-        # reparametrization trick!
         weights = self.W_mu + W_sigma * W_noise
         
         if self.bias:
             bias_sigma = torch.log1p(torch.exp(self.bias_sigma))  
             bias_noise = torch.rand_like(bias_sigma)
-            # reparametrization trick!
             bias = self.bias_mu + bias_noise * bias_sigma
         else:
             bias = None

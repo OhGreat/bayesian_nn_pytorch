@@ -10,7 +10,7 @@ class simpleBayesian(nn.Module):
         output_dim,
         inference_reps,
         device,
-        ):
+    ) -> None:
         super(simpleBayesian, self).__init__()
         """
         TODO: Write stuff...
@@ -23,7 +23,7 @@ class simpleBayesian(nn.Module):
         self.layers = nn.Sequential(
             BLinear(input_dim, hid_dim, device=device),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            # nn.Dropout(0.5),
             BLinear(hid_dim, output_dim, device=device),
         )
 
